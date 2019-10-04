@@ -9,14 +9,10 @@
 
 - name: Add docker GPG key
   apt_key:
-    keyserver: undefined # not required. The keyserver to retrieve key from.
     url: https://download.docker.com/linux/ubuntu/gpg # not required. The URL to retrieve key from.
-    data: undefined # not required. The keyfile contents to add to the keyring.
-    keyring: undefined # not required. The full path to specific keyring file in /etc/apt/trusted.gpg.d/
     state: present # not required. choices: absent;present. Ensures that the key is present (added) or absent (revoked).
-    file: undefined # not required. The path to a keyfile on the remote server to add to the keyring.
-    validate_certs: yes # not required. If C(no), SSL certificates for the target url will not be validated. This should only be used on personally controlled sites using self-signed certificates.
-    id: undefined # not required. The identifier of the key.,Including this allows check mode to correctly report the changed state.,If specifying a subkey's id be aware that apt-key does not understand how to remove keys via a subkey id.  Specify the primary key's id instead.,This parameter is required when C(state) is set to C(absent).
+    
+    
 
 - name: Add Docker Repository
   apt_repository:
