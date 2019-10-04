@@ -7,31 +7,30 @@
       apt: name={{ item }} state=latest update_cache=yes
       loop: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
 
-- name: Add docker GPG key
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg # not required. The URL to retrieve key from.
-    state: present # not required. choices: absent;present. Ensures that the key is present (added) or absent (revoked).
+    - name: Add docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg # not required. The URL to retrieve key from.
+        state: present # not required. choices: absent;present. Ensures that the key is present (added) or absent (revoked).
     
     
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable # required. A source string for the repository.
+        state: present # not required. choices: absent;present. A source string state.
+        update_cache: yes # not required. Run the equivalent of C(apt-get update) when a change occurs.  Cache updates are run after making changes.
+        mode: 0644 # not required. The octal mode for newly created files in sources.list.d
+        codename: undefined # not required. Override the distribution codename to use for PPA repositories. Should usually only be set when working with a PPA on a non-Ubuntu target (e.g. Debian or Mint)
+        validate_certs: yes # not required. If C(no), SSL certificates for the target repo will not be validated. This should only be used on personally controlled sites using self-signed certificates.
+        filename: undefined # not required. Sets the name of the source list file in sources.list.d. Defaults to a file name based on the repository source url. The .list extension will be automatically added.
 
-- name: Add Docker Repository
-  apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu bionic stable # required. A source string for the repository.
-    state: present # not required. choices: absent;present. A source string state.
-    update_cache: yes # not required. Run the equivalent of C(apt-get update) when a change occurs.  Cache updates are run after making changes.
-    mode: 0644 # not required. The octal mode for newly created files in sources.list.d
-    codename: undefined # not required. Override the distribution codename to use for PPA repositories. Should usually only be set when working with a PPA on a non-Ubuntu target (e.g. Debian or Mint)
-    validate_certs: yes # not required. If C(no), SSL certificates for the target repo will not be validated. This should only be used on personally controlled sites using self-signed certificates.
-    filename: undefined # not required. Sets the name of the source list file in sources.list.d. Defaults to a file name based on the repository source url. The .list extension will be automatically added.
+    - name: Update apt and install docker-ce
+      apt: update_cache=yes name=docker-ce state=latest
 
-- name: Update apt and install docker-ce
-  apt: update_cache=yes name=docker-ce state=latest
+    - name: Install docker module for python 
+      pip:
+        name: docker
 
-- name: Install docker module for python 
-  pip:
-    name: docker
-
-- name: Pull default Docker image 
-  docker_image: 
-    name: "{{ default_container_image }}"
-    source: pull 
+    - name: Pull default Docker image 
+      docker_image: 
+        name: "{{ default_container_image }}"
+        source: pull 
